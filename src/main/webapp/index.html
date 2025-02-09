@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equation Solver</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            margin-bottom: 10px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        input, button {
+            width: 500px;
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input::placeholder {
+            color: #888;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .rules {
+            margin-top: 20px;
+            padding: 10px;
+            background: white;
+            border-left: 4px solid #007bff;
+        }
+        .result-container {
+            margin-top: 20px;
+        }
+        .result-label {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        .result {
+            font-size: 18px;
+            color: green;
+            font-weight: bold;
+            white-space: pre-wrap;
+        }
+        .links {
+            margin-top: 20px;
+        }
+        .links a {
+            display: block;
+            margin-top: 5px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Equation Solver</h1>
+
+    <p>This is java implementatino of algorithm described in Similarity-Based Constraint Solving Modulo Commutativity: A Unified Framework</p>
+
+    <form id="equation-form">
+        <label for="equation1">Equation:</label>
+        <input type="text" id="equation1" name="equation1" required>
+
+        <label for="equation2">Relations:</label>
+        <input type="text" id="equation2" name="equation2" required>
+
+        <br>
+        <button type="submit">Solve</button>
+    </form>
+
+    <div class="result-container">
+        <p class="result-label">Result:</p>
+        <div class="result" id="result"></div>
+    </div>
+
+    <div class="rules">
+        <h2> Input Syntax: </h2>
+        <ul>
+            <li>A lower case character followed by "_o" is an ordered function symbol. e.g f_u, g_u</li>
+            <li>A lower case character followed by "_u" is an unordered function symbol. e.g f_o, g_o</li>
+            <li>An uppercase alphabet character without "_o" or "_u" is a variable. e.g X, Y, M</li>
+            <li>An \/ must be used for OR and /\ for AND</li>
+            <li>Equations must be in Disjunctive Normal Form (DNF). Brackets must be used for each conjunction.</li>
+        </ul>
+    </div>
+    <div class="rules">
+        <h2> Some Example: </h2>
+        <p>click on them to try</p>
+        <ul>
+            <li onclick="fillWithExamples()" >f_u(x, fo(x, b), y, ho(x, y)) ~= g_u(g_o(a, y), b). cut_value = 0.4. Relations: (f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_o, g_o, 0.3)</li>
+            <li onclick="fillWithExamples2()" >(f_u(X, Y) ~= 0.4 g_u(a_o, b_o)). cut_value = 0.4. Relations: (f_o, g_o, 0.5), (h_o, g_o, 0.3)</li>
+        </ul>
+    </div>
+
+<script>
+        document.getElementById("equation-form").addEventListener("submit", async function(event) {
+            event.preventDefault(); // Prevent form from reloading the page
+            
+            // Get form data
+            const equation1 = document.getElementById("equation1").value;
+            const equation2 = document.getElementById("equation2").value;
+            
+            try {
+                // Send POST request to the backend
+                const response = await fetch("http://localhost:8080/solve", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: `equation1=${encodeURIComponent(equation1)}&equation2=${encodeURIComponent(equation2)}`,
+                });
+
+                if (response.ok) {
+                    const result = await response.text();
+                    document.getElementById("result").textContent = "";
+                    document.getElementById("result").textContent = result;
+                } else {
+                    document.getElementById("result").textContent = "Error: Unable to process the request.";
+                }
+
+            } catch (error) {
+                document.getElementById("result").textContent = `Error: ${error.message}`;
+            }
+        });
+    
+        function fillWithExamples() {
+            document.getElementById("equation1").value = "(f_u(X, f_o(X, b_o), Y, h_o(X, Y)) ~= 0.4 g_u(g_o(a_o, Y), b_o))";
+            document.getElementById("equation2").value = "(f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_u, g_o, 0.3)";
+        }
+
+        function fillWithExamples2() {
+            document.getElementById("equation1").value = "(f_u(X, Y) ~= 0.4 g_u(a_o, b_o))";
+            document.getElementById("equation2").value = "(f_u, g_u, 0.6)";
+        }
+
+    </script>
+</body>
+</html>
