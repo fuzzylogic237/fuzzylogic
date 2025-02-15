@@ -41,6 +41,9 @@
         button:hover {
             background-color: #218838;
         }
+        li {
+            padding: 3px 0; /* Adds vertical spacing */
+        }
         .rules {
             margin-top: 20px;
             padding: 10px;
@@ -114,7 +117,9 @@
         <p>click on them to try</p>
         <ul>
             <li onclick="fillWithExamples()" >f_u(x, fo(x, b), y, ho(x, y)) ~= 0.4 g_u(g_o(a, y), b). Relations: (f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_o, g_o, 0.3)</li>
-            <li onclick="fillWithExamples2()" >(f_u(X, Y) ~= 0.4 g_u(a_o, b_o)). Relations: (f_o, g_o, 0.5), (h_o, g_o, 0.3)</li>
+            <li onclick="fillWithExamples2()" >(f_u(X) ~= 0.1 g_u(g_u(X), f_o(Y), M) /\ X ~= 0.3 k_o) \/ (f_u(X, Y) ~= 0.4 g_u(a_o, b_o)). Relations: (f_o, g_o, 0.5)</li>
+            <li onclick="fillWithExamples3()" >(f_u(g_u(X)) ~= 0.1 m_u(k_u(f_u, m_u, g_o))  /\ g_u ~= 0.01 k_u). Relations: (f_u, m_u, 0.6), (g_u, k_u, 0.4)</li>
+
         </ul>
     </div>
 
@@ -155,8 +160,13 @@
         }
 
         function fillWithExamples2() {
-            document.getElementById("equation1").value = "(f_u(X, Y) ~= 0.4 g_u(a_o, b_o))";
+            document.getElementById("equation1").value = "(f_u(X) ~= 0.1 g_u(g_u(X), f_o(Y), M) /\\ X ~= 0.3 k_o) \\/ (f_u(X, Y) ~= 0.4 g_u(a_o, b_o))";
             document.getElementById("equation2").value = "(f_u, g_u, 0.6)";
+        }
+
+        function fillWithExamples3() {
+            document.getElementById("equation1").value = "(f_u(g_u(X)) ~= 0.1 m_u(k_u(f_u, m_u, g_o))  /\\ g_u ~= 0.01 k_u)";
+            document.getElementById("equation2").value = "(f_u, m_u, 0.6), (g_u, k_u, 0.4)";
         }
 
     </script>
