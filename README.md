@@ -32,3 +32,9 @@ it gives solution
 3. Open 
    ```sh
     localhost:8080/.
+
+
+or visit
+
+```
+https://thesis-production-ef0c.up.railway.app/
